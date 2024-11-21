@@ -7,6 +7,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -89,5 +90,57 @@ public class ProductService {
     public List<String> getCategories() {
         return productRepository.findDistinctCategory();
     }
+
+    /**
+     * Save product.
+     *
+     * @param product the product
+     * @return the product
+     */
+    public Product addProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    /**
+     * Delete product by id.
+     *
+     * @param productId the product id
+     */
+    @Transactional
+    public void deleteProduct(long productId) {
+        if (productRepository.existsById(productId)) {
+            productRepository.deleteProductById(productId);
+        } else {
+            throw new EntityNotFoundException("Product not found with ID: " + productId);
+        }
+    }
+
+    /**
+     * Update product.
+     *
+     * @param product the product
+     * @return the product
+     */
+    public Product updateProduct(Long productId, Product product) {
+        // Retrieve existing product by ID
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found for ID: " + productId));
+
+        // Update fields only if the new values are not null
+        if (product.getName() != null) existingProduct.setName(product.getName());
+        if (product.getDescription() != null) existingProduct.setDescription(product.getDescription());
+        if (product.getPrice() != null) existingProduct.setPrice(product.getPrice());
+        if (product.getCategory() != null) existingProduct.setCategory(product.getCategory());
+        if (product.getImageurl() != null) existingProduct.setImageurl(product.getImageurl());
+        if (product.getAvailable() != null) existingProduct.setAvailable(product.getAvailable());
+        if (product.getSKU() != null) existingProduct.setSKU(product.getSKU());
+        if (product.getDimensions() != null) existingProduct.setDimensions(product.getDimensions());
+        if (product.getColor() != null) existingProduct.setColor(product.getColor());
+
+        // Save the updated product
+        return productRepository.save(existingProduct);
+    }
+
+
 
 }
