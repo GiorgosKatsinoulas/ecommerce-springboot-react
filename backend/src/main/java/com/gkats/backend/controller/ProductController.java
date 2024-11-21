@@ -3,8 +3,10 @@ package com.gkats.backend.controller;
 
 import com.gkats.backend.model.Product;
 import com.gkats.backend.services.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -122,6 +124,62 @@ public class ProductController {
         }
         return ResponseEntity.ok(categories); // Returns HTTP 200 with the category list
     }
+
+
+    /**
+     * Add product.
+     *
+     * @param product the product
+     * @return the product
+     */
+    @PostMapping("/addProduct")
+    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
+        log.info("Add product...");
+        Product savedProduct = productService.addProduct(product);
+        if(savedProduct == null) {
+            return ResponseEntity.internalServerError().build();   // Returns HTTP 500 if the product is not saved
+        }
+        return ResponseEntity.ok(savedProduct); // Returns HTTP 200 with the saved product
+    }
+
+    /**
+     * Update product.
+     *
+     * @param id the id
+     * @param product the product
+     * @return the product
+     */
+    @PutMapping("/updateProduct/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+        try {
+            log.info("Updating product with ID: {}", id);
+            Product updatedProduct = productService.updateProduct(id, product);
+            return ResponseEntity.ok(updatedProduct); // Return HTTP 200 OK with updated product
+        } catch (EntityNotFoundException e) {
+            log.error("Product not found for ID: {}", id);
+            return ResponseEntity.notFound().build(); // Return HTTP 404 Not Found if product doesn't exist
+        } catch (Exception e) {
+            log.error("Error updating product with ID: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Return HTTP 500 for other errors
+        }
+    }
+
+        /**
+         * Delete product by id.
+         *
+         * @param productId the product id
+         */
+        @DeleteMapping("/deleteProduct/{productId}")
+        public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
+            try {
+                productService.deleteProduct(productId);
+                return ResponseEntity.ok("Product deleted successfully.");
+            } catch (EntityNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting the product.");
+            }
+        }
 
 
 }
