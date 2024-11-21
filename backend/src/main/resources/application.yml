@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: backend  # Defines the name of the application
+  profiles:
+    active: dev  # Set the active profile to 'dev'
+  config:
+    import: classpath:safe.properties
+  server:
+    port: 8090  # Application will run on port 8090
+
+  datasource:
+    url: ${DB_URL}  # Your DB URL
+    username: ${DB_USERNAME}  # Your DB username
+    password: ${DB_PASSWORD} # Your DB password
+    driver-class-name: org.postgresql.Driver  # JDBC driver for PostgreSQL
+    hikari:
+      maximum-pool-size: 10  # Max number of connections in Hikari pool
+logging:
+  level:
+    org.hibernate.SQL: DEBUG  # Log SQL queries
+    org.hibernate.type.descriptor.sql: trace  # Log Hibernate SQL type info
