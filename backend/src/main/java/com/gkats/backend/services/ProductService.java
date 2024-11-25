@@ -133,7 +133,7 @@ public class ProductService {
         if (product.getCategory() != null) existingProduct.setCategory(product.getCategory());
         if (product.getImageurl() != null) existingProduct.setImageurl(product.getImageurl());
         if (product.getAvailable() != null) existingProduct.setAvailable(product.getAvailable());
-        if (product.getSKU() != null) existingProduct.setSKU(product.getSKU());
+        if (product.getSku() != null) existingProduct.setSku(product.getSku());
         if (product.getDimensions() != null) existingProduct.setDimensions(product.getDimensions());
         if (product.getColor() != null) existingProduct.setColor(product.getColor());
 

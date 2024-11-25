@@ -21,7 +21,7 @@ public class Product {
     private String category;
     private String imageurl;
     private Boolean available;
-    private String SKU;
+    private String sku;
     private String dimensions;
     private String color;
 
