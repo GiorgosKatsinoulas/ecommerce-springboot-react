@@ -9,6 +9,9 @@ import com.gkats.backend.repository.UserRepository;
 
 import java.util.Optional;
 
+/**
+ * The type Admin user initializer.
+ */
 @Component
 public class AdminUserInitializer implements CommandLineRunner {
 

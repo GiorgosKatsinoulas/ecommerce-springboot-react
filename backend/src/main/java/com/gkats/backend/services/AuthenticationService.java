@@ -12,6 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * The type Authentication service.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -21,6 +24,12 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    /**
+     * Register api response.
+     *
+     * @param request the request
+     * @return the api response
+     */
     public ApiResponse<Object> register(RegisterRequest request) {
         // Check if user already exists by email
         //TODO ADD RESPONSE ERROR
@@ -46,6 +55,12 @@ public class AuthenticationService {
                 .build();
     }
 
+    /**
+     * Login api response.
+     *
+     * @param request the request
+     * @return the api response
+     */
     public ApiResponse<Object> login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
