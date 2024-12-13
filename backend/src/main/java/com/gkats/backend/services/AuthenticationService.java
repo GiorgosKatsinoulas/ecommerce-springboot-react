@@ -32,9 +32,12 @@ public class AuthenticationService {
      */
     public ApiResponse<Object> register(RegisterRequest request) {
         // Check if user already exists by email
-        //TODO ADD RESPONSE ERROR
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("User already exists with this email");
+            return ApiResponse.builder()
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .message(ApiMessages.INTERNAL_ERROR)
+                    .data("User already exists with this email")
+                    .build();
         }
         var user = User.builder()
                 .firstname(request.getFirstName())
@@ -69,7 +72,6 @@ public class AuthenticationService {
                 )
         );
 
-        //TODO throw exception if user not found
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
 
         var jwtToken = jwtService.generateToken(user);

@@ -35,7 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
            @NonNull  FilterChain filterChain)
             throws ServletException, IOException {
 
-        //TODO THIS SHOULD BE CHANGED TO USE JWT method
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
