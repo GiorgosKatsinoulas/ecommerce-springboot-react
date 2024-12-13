@@ -4,10 +4,9 @@ import com.gkats.backend.config.JwtService;
 import com.gkats.backend.model.Role;
 import com.gkats.backend.model.User;
 import com.gkats.backend.repository.UserRepository;
-import com.gkats.backend.utils.AuthenticationResponse;
-import com.gkats.backend.utils.LoginRequest;
-import com.gkats.backend.utils.RegisterRequest;
+import com.gkats.backend.utils.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,8 +21,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
-
+    public ApiResponse<Object> register(RegisterRequest request) {
         // Check if user already exists by email
         //TODO ADD RESPONSE ERROR
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -40,12 +38,15 @@ public class AuthenticationService {
 
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
+
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message(ApiMessages.SUCCESS)
+                .data(jwtToken)
                 .build();
     }
 
-    public AuthenticationResponse login(LoginRequest request) {
+    public ApiResponse<Object> login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -57,8 +58,11 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
 
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
+
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message(ApiMessages.SUCCESS)
+                .data(jwtToken)
                 .build();
     }
 }
